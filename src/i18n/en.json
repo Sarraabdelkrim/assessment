@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "something_went_wrong": "Something went wrong",
+    "cancel": "Cancel",
+    "logout": "Logout",
+    "success": "Success",
+    "continue": "Continue",
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "invalid_email": "Invalid email address",
+    "required_field": "This field is required",
+     "email": "Email"
+  },
+
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgot": "Forgot password?",
+    "submit": "Login",
+    "loading": "Loading...",
+    "required": "This field is required",
+    "blocked_account": "Account blocked after too many attempts",
+    "tagline": "Almost everything delivered"
+  },
+
+  "forgot_password": {
+    "title": "Forgot Password",
+    "enter_username": "Enter your username to reset",
+    "reset": "Reset",
+    "back_to_login": "Back to login",
+    "email_sent": "Email sent",
+    "reset_link_sent": "Reset link sent",
+    "enter_email": "Enter your email to reset"
+  },
+
+  "home": {
+    "welcome": "Welcome back!",
+    "discover": "Discover",
+    "searchPlaceholder": "Search categories...",
+    "seeAll": "See all →",
+    "results": "result",
+    "resultsPlural": "results",
+    "resultsFor": "for",
+    "noResults": "No results found",
+    "noResultsSub": "Try another keyword",
+    "loading": "Loading...",
+      "noProductsFound": "No products found"
+  },
+
+  "profile": {
+    "administrator": "Administrator",
+    "preferences": "Preferences",
+    "dark_mode": "Dark mode",
+    "language": "Language",
+    "account": "Account",
+    "logout": "Logout",
+    "logout_confirmation": "Are you sure you want to logout?",
+    "logout_error": "Logout failed",
+
+    "dark_mode_enabled": "Dark mode enabled",
+    "dark_mode_disabled": "Dark mode disabled",
+    "logging_out": "Logging out...",
+    "please_wait": "Please wait..."
+  },
+  
+  
+  "editProduct": {
+    "title": "Edit Product",
+    "fields": {
+      "titleLabel": "Title",
+      "price": "Price",
+      "category": "Category",
+      "description": "Description"
+    },
+    "saveButton": "Save changes",
+    "success": "Product updated successfully",
+    "error": "Update failed",
+    "editButton": "Edit product"
+  },
+ "deleteModal": {
+    "title": "Delete product",
+    "subtitle": "Are you sure you want to delete ? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+    "products": {
+    "title": "Products",
+    "searchPlaceholder": "Search..."
+  },
+  "tabs": {
+    "home": "Home",
+    "products": "Products",
+    "search": "Search",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "try_again_in": "Try again in {{seconds}} seconds",
+    "forgot_password": "Forgot password?",
+    "blocked": "Account blocked after too many attempts",
+    "blockedsoon":"Your account will be blocked after 5 failed attempts",
+    "too_many_attempts": "Too many attempts",
+    "blocked_5min": "Please try again after 5 minutes",
+    "attempts_left": "Attempts left",
+    "last_attempt": "Last attempt"
+  },
+    "reset": {
+    "title": "Reset Password",
+    "subtitle": "Choose a new secure password.",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "confirm": "Confirm",
+    "success": "Password reset successful",
+    "can_login": "You can now log in.",
+    "min_8": "Password must contain at least 8 characters",
+    "need_uppercase": "Password must contain an uppercase letter",
+    "need_number": "Password must contain a number",
+    "passwords_no_match": "Passwords do not match",
+    "weak": "Weak",
+    "fair": "Fair",
+    "good": "Good",
+    "strong": "Strong"
+  },
+    "otp": {
+    "title": "OTP Verification",
+    "sent_to": "Code sent to",
+    "verify": "Verify",
+    "resend": "Resend code",
+    "resent": "Code resent successfully",
+    "invalid": "Invalid OTP code",
+    "incomplete": "Please enter the complete code",
+    "expires_in": "Expires in",
+    "expired": "Code expired"
+  }
+
+}

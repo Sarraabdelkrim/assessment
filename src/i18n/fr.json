@@ -1,0 +1,130 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "something_went_wrong": "Une erreur est survenue",
+    "cancel": "Annuler",
+    "logout": "Déconnexion","success": "Succès",
+    "continue": "Continuer",
+    "invalid_email": "Adresse email invalide",
+    "required_field": "Ce champ est requis",
+    "email": "Email"
+  },
+
+  "login": {
+    "title": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "remember": "Se souvenir de moi",
+    "forgot": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "loading": "Chargement...",
+    "required": "Ce champ est requis",
+    "blocked_account": "Compte bloqué après trop de tentatives",
+    "tagline": "Presque tout livré"
+  },
+
+  "forgot_password": {
+    "title": "Mot de passe oublié",
+    "enter_username": "Entrez votre username pour réinitialiser",
+    "reset": "Réinitialiser",
+    "back_to_login": "Retour à la connexion",
+    "email_sent": "Email envoyé",
+    "reset_link_sent": "Lien de réinitialisation envoyé"
+  },
+
+  "home": {
+    "welcome": "Bon retour parmi nous !",
+    "discover": "Découvrir",
+    "searchPlaceholder": "Rechercher des catégories...",
+    "seeAll": "Voir tout →",
+    "results": "résultat",
+    "resultsPlural": "résultats",
+    "resultsFor": "pour",
+    "noResults": "Aucun résultat",
+    "noResultsSub": "Essayez un autre terme",
+    "loading": "Chargement...",
+      "noProductsFound": "Aucun produit trouvé"
+  },
+
+  "profile": {
+    "administrator": "Administrateur",
+    "preferences": "Préférences",
+    "dark_mode": "Mode sombre",
+    "language": "Langue",
+    "account": "Compte",
+    "logout": "Déconnexion",
+    "logout_confirmation": "Voulez-vous vraiment vous déconnecter ?",
+    "logout_error": "Erreur lors de la déconnexion",
+    "please_wait": "Veuillez patienter...",
+    "logging_out": "Déconnexion en cours..."
+  },
+  
+  "editProduct": {
+    "title": "Edit Product",
+    "fields": {
+      "titleLabel": "Title",
+      "price": "Price",
+      "category": "Category",
+      "description": "Description"
+    },
+    "saveButton": "Save changes",
+    "success": "Product updated successfully",
+    "error": "Update failed",
+    "editButton": "Edit product"
+  },
+
+  "products": {
+    "title": "Produits",
+    "searchPlaceholder": "Rechercher..."
+  },
+   "tabs": {
+    "home": "Accueil",
+    "products": "Produits",
+    "search": "Recherche",
+    "profile": "Profil"
+  },
+ "auth": {
+  "blocked": "Compte bloqué",
+  "try_again_in": "Réessayez dans {{seconds}} secondes",
+    "too_many_attempts": "Trop de tentatives",
+    "blockedsoon": "Votre compte sera bloqué après 5 tentatives échouées",
+    "blocked_5min": "Veuillez réessayer après 5 minutes",
+    "attempts_left": "Tentatives restantes",
+    "last_attempt": "Dernière tentative"
+  },
+   "reset": {
+    "title": "Réinitialiser le mot de passe",
+    "subtitle": "Choisissez un nouveau mot de passe sécurisé.",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "confirm": "Confirmer",
+    "success": "Mot de passe réinitialisé",
+    "can_login": "Vous pouvez maintenant vous connecter.",
+    "min_8": "Le mot de passe doit contenir au moins 8 caractères",
+    "need_uppercase": "Le mot de passe doit contenir une majuscule",
+    "need_number": "Le mot de passe doit contenir un chiffre",
+    "passwords_no_match": "Les mots de passe ne correspondent pas",
+    "weak": "Faible",
+    "fair": "Moyen",
+    "good": "Bon",
+    "strong": "Fort"
+  },
+    "otp": {
+    "title": "Vérification OTP",
+    "sent_to": "Code envoyé à",
+    "verify": "Vérifier",
+    "resend": "Renvoyer le code",
+    "resent": "Code renvoyé avec succès",
+    "invalid": "Code OTP invalide",
+    "incomplete": "Veuillez saisir le code complet",
+    "expires_in": "Expire dans",
+    "expired": "Le code a expiré"
+  },
+    "deleteModal": {
+    "title": "Supprimer le produit",
+    "subtitle": "Voulez-vous vraiment supprimer ? Cette action est irréversible.",
+    "cancel": "Annuler",
+    "confirm": "Supprimer"
+  }
+}
