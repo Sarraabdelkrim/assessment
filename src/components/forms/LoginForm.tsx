@@ -1,49 +1,61 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native";
-import { z } from "zod";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from "react-native";
 
-import { useAuthStore } from "../../auth/auth.store";
+
+
+import {
+  LoginFormData,
+  loginSchema,
+} from "@/src/validation/auth.validation";
 import { useTranslation } from "../../i18n/useTranslation";
+import { useAuthStore } from "../../store/auth/auth.store";
 import { useThemeStore } from "../../store/theme.store";
 import { darkColors, lightColors } from "../../theme/colors";
 import { Input } from "../ui/Input";
 import { Text } from "../ui/Text";
 
-type FormData = {
-  username: string;
-  password: string;
+type LoginFormProps = {
+  onSubmit: (data: LoginFormData) => void | Promise<void>;
+  loading: boolean;
 };
 
-export function LoginForm({ onSubmit, loading }: any) {
+export function LoginForm({ onSubmit, loading }: LoginFormProps) {
   const { t } = useTranslation();
   const isBlocked = useAuthStore((s) => s.isBlocked);
   const dark = useThemeStore((s) => s.dark);
   const colors = dark ? darkColors : lightColors;
-  const S = styles(colors); 
+  const S = styles(colors);
+  const schema = loginSchema(t);
 
-  const schema = z.object({
-    username: z.string().min(1, t("login.required")),
-    password: z.string().min(1, t("login.required")),
-  });
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<LoginFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      username: "emilys",
-      password: "emilyspass",
+        username: "emilys",
+    password: "emilyspass",
     },
   });
 
   return (
-    <View style={S.container}>
-
-  
+    <ScrollView
+      contentContainerStyle={S.container}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+    
       <Controller
         control={control}
         name="username"
@@ -59,23 +71,42 @@ export function LoginForm({ onSubmit, loading }: any) {
         )}
       />
 
-
-      <Controller
-        control={control}
-        name="password"
-        render={({ field: { onChange, value } }) => (
-          <Input
-            label={t("login.password")}
-            value={value}
-            error={errors.password?.message}
-            onChangeText={onChange}
-            secureTextEntry
-            autoCapitalize="none"
-            style={[S.input, errors.password && S.inputError]}
+      
+ <Controller
+  control={control}
+  name="password"
+  render={({ field: { onChange, value } }) => (
+    <Input
+      label={t("login.password")}
+      value={value}
+      error={errors.password?.message}
+      onChangeText={onChange}
+      secureTextEntry={!showPassword}
+      autoCapitalize="none"
+      containerStyle={errors.password && S.inputError}
+      rightElement={
+        <TouchableOpacity
+          onPress={() => setShowPassword((prev) => !prev)}
+          style={S.eyeIcon}
+        >
+          <Image
+            source={
+              showPassword
+                ? require("../../../assets/icons/view.png")
+                : require("../../../assets/icons/hide.png")
+            }
+            style={{
+              width: 20,
+              height: 20,
+              tintColor: colors.textMuted,
+            }}
           />
-        )}
-      />
-
+        </TouchableOpacity>
+      }
+    />
+  )}
+/>
+    
       <TouchableOpacity
         disabled={loading || isBlocked}
         onPress={handleSubmit(onSubmit)}
@@ -90,14 +121,11 @@ export function LoginForm({ onSubmit, loading }: any) {
         )}
       </TouchableOpacity>
 
-    
+     
       {isBlocked && (
-        <Text style={S.blockedText}>
-          {t("login.blocked_account")}
-        </Text>
+        <Text style={S.blockedText}>{t("login.blocked_account")}</Text>
       )}
-
-    </View>
+    </ScrollView>
   );
 }
 
@@ -136,4 +164,17 @@ const styles = (colors: typeof lightColors) => StyleSheet.create({
     fontSize: 13,
     marginTop: 4,
   },
+   passwordWrapper: {
+      position: "relative",
+      justifyContent: "center",
+    },
+
+   eyeIcon: {
+  position: "absolute",
+  right: 14,
+  top: 0,
+  bottom: 0,
+  justifyContent: "center",
+  alignItems: "center",
+}
 });

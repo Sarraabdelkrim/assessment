@@ -3,17 +3,20 @@ import { useTranslation } from "@/src/i18n/useTranslation";
 import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";
 import { Fonts } from "@/src/theme/fonts";
+
+import { Ionicons } from "@expo/vector-icons";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function CategoryScreen() {
@@ -21,12 +24,14 @@ export default function CategoryScreen() {
 
   const dark = useThemeStore((s) => s.dark);
   const colors = dark ? darkColors : lightColors;
+
   const { t } = useTranslation();
 
   const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  // FETCH
   useEffect(() => {
     const fetchProducts = async () => {
       if (!category) return;
@@ -43,9 +48,12 @@ export default function CategoryScreen() {
     fetchProducts();
   }, [category]);
 
-  const filtered = products.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
-  );
+
+  const filtered = useMemo(() => {
+    return products.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [products, search]);
 
   const title =
     typeof category === "string"
@@ -62,29 +70,38 @@ export default function CategoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-
      
       <Stack.Screen
         options={{
-          title: "",
+          title: title,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.replace("/home")}
+              style={{ paddingHorizontal: 10 }}
+            >
+              <Ionicons
+                name="arrow-back"
+                size={22}
+                color={colors.text}
+              />
+            </TouchableOpacity>
+          ),
         }}
       />
-
-      
       <View style={styles(colors).header}>
-        <Text style={[styles(colors).title, { color: colors.text }]}>
-          {title}
-        </Text>
-
         <View
           style={[
             styles(colors).searchWrapper,
-            { backgroundColor: colors.surface, borderColor: colors.border },
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+            },
           ]}
         >
-          <Image
-            source={require("@/assets/icons/search.png")}
-            style={[styles(colors).icon, { tintColor: colors.textMuted }]}
+          <Ionicons
+            name="search"
+            size={18}
+            color={colors.textMuted}
           />
 
           <TextInput
@@ -92,18 +109,25 @@ export default function CategoryScreen() {
             placeholderTextColor={colors.placeholder}
             value={search}
             onChangeText={setSearch}
-            style={[styles(colors).searchInput, { color: colors.text }]}
+            style={[
+              styles(colors).searchInput,
+              { color: colors.text },
+            ]}
           />
 
           {search.length > 0 && (
             <TouchableOpacity onPress={() => setSearch("")}>
-              <Text style={{ fontSize: 14, color: colors.textMuted }}>✕</Text>
+              <Ionicons
+                name="close"
+                size={18}
+                color={colors.textMuted}
+              />
             </TouchableOpacity>
           )}
         </View>
       </View>
 
-  
+    
       {filtered.length === 0 ? (
         <View style={styles(colors).empty}>
           <Text style={{ color: colors.textMuted }}>
@@ -115,9 +139,12 @@ export default function CategoryScreen() {
           data={filtered}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles(colors).list}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => router.push(`/(app)/products/${item.id}`)}
+              onPress={() =>
+                router.push(`/(app)/products/${item.id}`)
+              }
               style={[
                 styles(colors).card,
                 {
@@ -134,7 +161,10 @@ export default function CategoryScreen() {
               <View style={styles(colors).info}>
                 <Text
                   numberOfLines={1}
-                  style={[styles(colors).name, { color: colors.text }]}
+                  style={[
+                    styles(colors).name,
+                    { color: colors.text },
+                  ]}
                 >
                   {item.title}
                 </Text>
@@ -177,14 +207,7 @@ const styles = (colors: typeof lightColors) =>
 
     header: {
       paddingHorizontal: 16,
-      //paddingTop: 20,
       paddingBottom: 12,
-      gap: 10,
-    },
-
-    title: {
-      fontSize: 24,
-      fontFamily: Fonts.brandBold,
     },
 
     searchWrapper: {
@@ -200,7 +223,6 @@ const styles = (colors: typeof lightColors) =>
     searchInput: {
       flex: 1,
       fontSize: 15,
-      height: "100%",
     },
 
     list: {
@@ -245,7 +267,7 @@ const styles = (colors: typeof lightColors) =>
     },
 
     priceText: {
-      color: "colors.background",
+      color: "#fff",
       fontSize: 11,
       fontFamily: Fonts.brandBold,
     },
@@ -254,11 +276,5 @@ const styles = (colors: typeof lightColors) =>
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-    },
-
-    icon: {
-      width: 18,
-      height: 18,
-      resizeMode: "contain",
     },
   });

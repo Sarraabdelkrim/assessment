@@ -4,7 +4,8 @@
     "error": "Erreur",
     "something_went_wrong": "Une erreur est survenue",
     "cancel": "Annuler",
-    "logout": "Déconnexion","success": "Succès",
+    "logout": "Déconnexion",
+    "success": "Succès",
     "continue": "Continuer",
     "invalid_email": "Adresse email invalide",
     "required_field": "Ce champ est requis",
@@ -44,7 +45,7 @@
     "noResults": "Aucun résultat",
     "noResultsSub": "Essayez un autre terme",
     "loading": "Chargement...",
-      "noProductsFound": "Aucun produit trouvé"
+    "noProductsFound": "Aucun produit trouvé"
   },
 
   "profile": {
@@ -59,41 +60,68 @@
     "please_wait": "Veuillez patienter...",
     "logging_out": "Déconnexion en cours..."
   },
-  
+
   "editProduct": {
-    "title": "Edit Product",
+    "title": "Modifier le produit",
     "fields": {
-      "titleLabel": "Title",
-      "price": "Price",
-      "category": "Category",
+      "titleLabel": "Titre",
+      "price": "Prix",
+      "category": "Catégorie",
       "description": "Description"
     },
-    "saveButton": "Save changes",
-    "success": "Product updated successfully",
-    "error": "Update failed",
-    "editButton": "Edit product"
+    "saveButton": "Enregistrer",
+    "success": "Produit mis à jour avec succès",
+    "error": "Échec de la mise à jour",
+    "editButton": "Modifier le produit"
   },
 
   "products": {
     "title": "Produits",
-    "searchPlaceholder": "Rechercher..."
+    "searchPlaceholder": "Rechercher...",
+    "addToCart": "Ajouter au panier",
+    "inCart": "Dans le panier"
   },
-   "tabs": {
+
+  "cart": {
+    "title": "Mon panier",
+    "empty": "Votre panier est vide",
+    "emptySubtitle": "Parcourez les produits et ajoutez-les ici",
+    "browse": "Parcourir les produits",
+    "clearAll": "Tout supprimer",
+    "clearConfirmTitle": "Vider le panier",
+    "clearConfirmMessage": "Supprimer tous les articles ?",
+    "items": "article",
+    "itemsPlural": "articles",
+    "subtotal": "Sous-total",
+    "checkout": "Commander",
+    "orderSuccess": "Commande passée !",
+    "orderSuccessMessage": "Panier #{{id}} créé avec succès",
+    "orderError": "Échec de la commande",
+    "orderErrorMessage": "Veuillez réessayer",
+    "eachUnit": "l'unité",
+    "add": "Ajouter au panier",
+    "remove": "Retirer du panier"
+  },
+
+  "tabs": {
     "home": "Accueil",
     "products": "Produits",
     "search": "Recherche",
-    "profile": "Profil"
+    "profile": "Profil",
+    "cart": "Panier"
   },
- "auth": {
-  "blocked": "Compte bloqué",
-  "try_again_in": "Réessayez dans {{seconds}} secondes",
+
+  "auth": {
+    "blocked": "Compte bloqué",
+    "try_again_in": "Réessayez dans {{seconds}} secondes",
     "too_many_attempts": "Trop de tentatives",
     "blockedsoon": "Votre compte sera bloqué après 5 tentatives échouées",
     "blocked_5min": "Veuillez réessayer après 5 minutes",
     "attempts_left": "Tentatives restantes",
     "last_attempt": "Dernière tentative"
   },
-   "reset": {
+
+  "reset": {
     "title": "Réinitialiser le mot de passe",
     "subtitle": "Choisissez un nouveau mot de passe sécurisé.",
     "new_password": "Nouveau mot de passe",
@@ -110,7 +138,8 @@
     "good": "Bon",
     "strong": "Fort"
   },
-    "otp": {
+
+  "otp": {
     "title": "Vérification OTP",
     "sent_to": "Code envoyé à",
     "verify": "Vérifier",
@@ -121,7 +150,8 @@
     "expires_in": "Expire dans",
     "expired": "Le code a expiré"
   },
-    "deleteModal": {
+
+  "deleteModal": {
     "title": "Supprimer le produit",
     "subtitle": "Voulez-vous vraiment supprimer ? Cette action est irréversible.",
     "cancel": "Annuler",

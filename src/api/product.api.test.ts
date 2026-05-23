@@ -123,7 +123,7 @@ describe("deleteProduct", () => {
 
     const result = await deleteProduct(1);
 
-    expect(result.isDeleted).toBe(true);
+    expect(result.id).toBe(true);
   });
 
   it("throws when delete fails", async () => {

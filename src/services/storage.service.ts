@@ -1,12 +1,13 @@
 import * as SecureStore from "expo-secure-store";
 
 export const storage = {
-  setToken: (token: string) =>
-    SecureStore.setItemAsync("token", token),
+  setToken: (token: string) => {
+    if (!token) throw new Error("TOKEN_IS_UNDEFINED");
 
-  getToken: () =>
-    SecureStore.getItemAsync("token"),
+    return SecureStore.setItemAsync("token", String(token));
+  },
 
-  removeToken: () =>
-    SecureStore.deleteItemAsync("token"),
+  getToken: () => SecureStore.getItemAsync("token"),
+
+  removeToken: () => SecureStore.deleteItemAsync("token"),
 };

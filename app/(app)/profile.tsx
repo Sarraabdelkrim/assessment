@@ -1,5 +1,5 @@
-import { useAuthStore } from "@/src/auth/auth.store";
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useLangStore } from "@/src/store/lang.store";
 import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";

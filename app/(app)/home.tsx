@@ -1,4 +1,5 @@
 import { useTranslation } from "@/src/i18n/useTranslation";
+import { useCartStore } from "@/src/store/cart/cart.store";
 import { useThemeStore } from "@/src/store/theme.store";
 import { Fonts } from "@/src/theme/fonts";
 import { router } from "expo-router";
@@ -23,6 +24,7 @@ export default function Home() {
   const { t } = useTranslation();
   const { data: categories, isLoading } = useCategories();
  const style = styles(colors); 
+ const addItem = useCartStore((s) => s.addItem);
   const filtered = search.trim()
     ? categories?.filter((c) => c.toLowerCase().includes(search.toLowerCase()))
     : categories;
@@ -85,9 +87,7 @@ export default function Home() {
         params: { category: cat },
       });
     }}
-    onPressProduct={(product) =>
-      console.log("Producttt:", product.id)
-    }
+    onPressProduct={(product) => addItem(product)}
   />
 ))}
 

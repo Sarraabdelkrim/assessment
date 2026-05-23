@@ -1,229 +1,172 @@
-import { getProductsByCategory } from "@/src/api/product.api";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { getProducts } from "@/src/api/product.api";
+import { useTranslation } from "@/src/i18n/useTranslation";
+import { useCartStore } from "@/src/store/cart/cart.store";
+import { useThemeStore } from "@/src/store/theme.store";
+import { darkColors, lightColors } from "@/src/theme/colors";
+import type { Product } from "@/src/types/product.types";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
-import { useTranslation } from "@/src/i18n/useTranslation";
-import { useThemeStore } from "@/src/store/theme.store";
-import { darkColors, lightColors } from "@/src/theme/colors";
-import { Fonts } from "@/src/theme/fonts";
-
-export default function CategoryScreen() {
-  const { category } = useLocalSearchParams<{ category: string }>();
-
+export default function ProductsScreen() {
   const dark = useThemeStore((s) => s.dark);
   const colors = dark ? darkColors : lightColors;
-  const { t } = useTranslation();
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+
+  const addItem = useCartStore((s) => s.addItem);
+const { t } = useTranslation();
+  const totalItems = useCartStore((s) =>
+    s.items.reduce((sum, i) => sum + i.quantity, 0)
+  );
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (!category) return;
-
+    const fetch = async () => {
       try {
-        setLoading(true);
-        const data = await getProductsByCategory(category);
+        const data = await getProducts({ page: 0, search: "" });
         setProducts(data);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [category]);
+    fetch();
+  }, []);
 
-  const filtered = products.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    return products.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [products, search]);
+
+  const handleAdd = (product: Product) => {
+    addItem(product);
+  };
 
   if (loading) {
     return (
-      <View style={[styles(colors).loader]}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <ActivityIndicator size="large" color={colors.primary} />
     );
   }
 
   return (
-    <View style={[styles(colors).root, { backgroundColor: colors.background }]}>
-      
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
     
-      <View style={styles(colors).header}>
-        <Text style={[styles(colors).title, { color: colors.text }]}>
-          {category}
-        </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          padding: 16,
+          gap: 10,
+          paddingTop: 40,
+        }}
+      >
+    
+        <TextInput
+          placeholder="Search..."
+          value={search}
+          onChangeText={setSearch}
+          style={{
+            flex: 1,
+            borderWidth: 1,
+            borderColor: colors.border,
+            borderRadius: 10,
+            padding: 10,
+            color: colors.text,
+          }}
+        />
 
-        <View
-          style={[
-          
-            { backgroundColor: colors.surface, borderColor: colors.border },
-          ]}
+        <TouchableOpacity
+          onPress={() => router.push("/(app)/cart")}
+          style={{
+            width: 45,
+            height: 45,
+            backgroundColor: colors.primary,
+            borderRadius: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <TextInput
-             placeholder={t("home.searchPlaceholder")}
-            value={search}
-            onChangeText={setSearch}
-            placeholderTextColor={colors.textMuted}
-            style={{ flex: 1, color: colors.text }}
-          />
-        </View>
+          <Ionicons name="cart" size={20} color={colors.background} />
+
+          {totalItems > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                top: -4,
+                right: -4,
+                backgroundColor: "red",
+                width: 18,
+                height: 18,
+                borderRadius: 9,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: colors.background, fontSize: 10 }}>
+                {totalItems}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
-      {filtered.length === 0 ? (
-        <View style={styles(colors).empty}>
-          <Text style={{ color: colors.textMuted }}>
-            {t("home.noProductsFound")}
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={filtered}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles(colors).list}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() =>
-                router.push(`/(app)/products/${item.id}`)
-              }
-              style={[
-                styles(colors).card,
-                {
-                  backgroundColor: colors.card,
-                  borderColor: colors.border,
-                },
-              ]}
-            >
-              <Image
-                source={{ uri: item.thumbnail }}
-                style={styles(colors).image}
-              />
+     
+      <FlatList
+        data={filtered}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flexDirection: "row",
+              margin: 10,
+              padding: 10,
+              borderWidth: 1,
+              borderColor: colors.border,
+              borderRadius: 12,
+            }}
+          >
+            <Image
+              source={{ uri: item.thumbnail }}
+              style={{ width: 80, height: 80 }}
+            />
 
-              <View style={styles(colors).info}>
-                <Text
-                  numberOfLines={1}
-                  style={[styles(colors).name, { color: colors.text }]}
-                >
-                  {item.title}
+            <View style={{ flex: 1, marginLeft: 10 }}>
+              <Text style={{ color: colors.text }}>
+                {item.title}
+              </Text>
+
+              <Text style={{ color: colors.textMuted }}>
+                ${item.price}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => handleAdd(item)}
+                style={{
+                  marginTop: 8,
+                  backgroundColor: colors.primary,
+                  padding: 8,
+                  borderRadius: 8,
+                }}
+              >
+                <Text style={{ color: colors.background, fontSize: 10 }}>
+               {t("cart.add")}
                 </Text>
-
-                <Text
-                  style={[styles(colors).category, { color: colors.textMuted }]}
-                >
-                  {item.category}
-                </Text>
-
-                <View
-                  style={[
-                    styles(colors).priceBadge,
-                    { backgroundColor: colors.primary },
-                  ]}
-                >
-                  <Text style={styles(colors).priceText}>
-                    ${item.price}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      />
     </View>
   );
 }
-
-const styles = (colors: typeof lightColors) =>
-  StyleSheet.create({
-    root: {
-      flex: 1,
-    },
-
-    loader: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-
-    header: {
-      paddingTop: 60,
-      paddingHorizontal: 16,
-      paddingBottom: 12,
-      gap: 10,
-    },
-
-    title: {
-      fontSize: 24,
-      fontFamily: Fonts.brandBold,
-    },
-
-    searchBox: {
-      borderWidth: 1,
-      borderRadius: 12,
-      paddingHorizontal: 12,
-      height: 44,
-      justifyContent: "center",
-    },
-
-    list: {
-      padding: 16,
-      gap: 12,
-    },
-
-    card: {
-      flexDirection: "row",
-      borderRadius: 16,
-      borderWidth: 1,
-      overflow: "hidden",
-    },
-
-    image: {
-      width: 90,
-      height: 90,
-    },
-
-    info: {
-      flex: 1,
-      padding: 12,
-      gap: 4,
-    },
-
-    name: {
-      fontSize: 14,
-      fontFamily: Fonts.brandBold,
-    },
-
-    category: {
-      fontSize: 12,
-      textTransform: "capitalize",
-    },
-
-    priceBadge: {
-      marginTop: 6,
-      alignSelf: "flex-start",
-      paddingHorizontal: 8,
-      paddingVertical: 3,
-      borderRadius: 20,
-    },
-
-    priceText: {
-      color: "#fff",
-      fontSize: 11,
-      fontFamily: Fonts.brandBold,
-    },
-
-    empty: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });

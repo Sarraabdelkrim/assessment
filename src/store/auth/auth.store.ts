@@ -1,5 +1,6 @@
+import { authService } from "@/src/services/auth.service";
+import { storage } from "@/src/services/storage.service";
 import { create } from "zustand";
-import { api } from "../api/client";
 
 type User = {
   id: number;
@@ -20,8 +21,9 @@ type AuthState = {
   blockedUntil: number | null;
 
   login: (data: { username: string; password: string }) => Promise<void>;
-  logout: () => void;
-  resetAttempts: () => void;
+  logout: () => Promise<void>;
+  hydrate: () => Promise<void>;
+   resetAttempts: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -29,6 +31,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isLoading: false,
 
+ 
   loginAttempts: 0,
   isBlocked: false,
   blockedUntil: null,
@@ -40,13 +43,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       blockedUntil: null,
     }),
 
+  hydrate: async () => {
+    const token = await storage.getToken();
+
+    if (token) {
+      set({ token });
+    }
+  },
+
+  
   login: async (data) => {
     const { loginAttempts, isBlocked, blockedUntil } = get();
 
+    console.log("🔐 LOGIN ATTEMPT:", data);
+
+    
     if (isBlocked && blockedUntil && Date.now() < blockedUntil) {
-      throw new Error("USER_BLOCKED");
+      throw new Error("ACCOUNT_TEMPORARILY_BLOCKED");
     }
 
+   
     if (isBlocked && blockedUntil && Date.now() > blockedUntil) {
       set({
         isBlocked: false,
@@ -58,35 +74,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
 
-      const res = await api.post("/auth/login", {
-        username: data.username,
-        password: data.password,
-        expiresInMins: 60,
-      });
+      const { token, user } = await authService.login(data);
+
+      await storage.setToken(token);
+
 
       set({
-        token: res.data.accessToken,
-        user: {
-          id: res.data.id,
-          username: res.data.username,
-          email: res.data.email,
-          firstName: res.data.firstName,
-          lastName: res.data.lastName,
-          image: res.data.image,
-        },
+        token,
+        user,
         loginAttempts: 0,
         isBlocked: false,
         blockedUntil: null,
       });
-    } catch (error) {
-      const newAttempts = loginAttempts + 1;
 
-      const shouldBlock = newAttempts >= 3;
+    } catch (error) {
+      const attempts = loginAttempts + 1;
+
+      const shouldBlock = attempts >= 3;
+
+      //console.log("❌ LOGIN FAILED");
 
       set({
-        loginAttempts: newAttempts,
+        loginAttempts: attempts,
         isBlocked: shouldBlock,
-        blockedUntil: shouldBlock ? Date.now() + 5 * 60 * 1000 : null,
+        blockedUntil: shouldBlock
+          ? Date.now() + 5 * 60 * 1000
+          : null,
       });
 
       throw error;
@@ -95,12 +108,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  logout: () =>
+ 
+  logout: async () => {
+    await storage.removeToken();
+
     set({
       token: null,
       user: null,
       loginAttempts: 0,
       isBlocked: false,
       blockedUntil: null,
-    }),
+    });
+  },
 }));

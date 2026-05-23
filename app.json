@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "assessment",
-    "slug": "assessment",
+    "name": "wolt",
+    "slug": "wolt",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "assessment",
+    "icon": "./assets/images/wolt-logo.png",
+    "scheme": "wolt",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

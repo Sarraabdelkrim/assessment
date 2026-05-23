@@ -4,8 +4,8 @@ import { Image, StyleSheet, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { Fonts } from "@/src/theme/fonts";
-import { useAuthStore } from "../src/auth/auth.store";
 import { useTranslation } from "../src/i18n/useTranslation";
+import { useAuthStore } from "../src/store/auth/auth.store";
 import { useThemeStore } from "../src/store/theme.store";
 import { darkColors, lightColors } from "../src/theme/colors";
 

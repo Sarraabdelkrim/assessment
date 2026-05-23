@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/src/auth/auth.store";
+import { useAuthStore } from "@/src/store/auth/auth.store";
 import { useEffect, useState } from "react";
 
 export const useLoginBlockTimer = () => {

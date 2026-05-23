@@ -4,9 +4,9 @@ import { router } from "expo-router";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { useAuthStore } from "../../src/auth/auth.store";
 import { LoginForm } from "../../src/components/forms/LoginForm";
 import SmoothInfiniteScroll from "../../src/components/SmoothInfiniteScroll";
+import { useAuthStore } from "../../src/store/auth/auth.store";
 
 import { useScreenshotGuard } from "@/src/auth/useScreenshotGuard";
 import { useLoginBlockTimer } from "@/src/hooks/useLoginBlockTimer";
@@ -30,6 +30,8 @@ export default function LoginScreen() {
   const { isActuallyBlocked, remainingTime } = useLoginBlockTimer();
 
   const handleLogin = async (data: any) => {
+     console.log("🔥 FORM DATA:", data);
+
     try {
       if (isActuallyBlocked) {
         return;

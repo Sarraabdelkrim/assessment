@@ -14,7 +14,7 @@ export const useTranslation = () => {
   const lang = useLangStore((s) => s.lang);
   const dict = lang === "fr" ? fr : en;
 
-  const t = (key: TranslationKey): string => {
+const t = (key: string): string => {
     return key.split(".").reduce((obj: any, k) => obj?.[k], dict) ?? key;
   };
 
