@@ -6,7 +6,7 @@ import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";
 import { Fonts } from "@/src/theme/fonts";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
@@ -27,6 +27,9 @@ export default function ProductDetailScreen() {
   const { data: product, isLoading } = useProduct(Number(id));
 
   const addItem = useCartStore((s) => s.addItem);
+  const totalItems = useCartStore((s) =>
+    s.items.reduce((sum, i) => sum + i.quantity, 0)
+  );
 
   const style = useMemo(() => styles(colors), [colors]);
 
@@ -65,18 +68,58 @@ export default function ProductDetailScreen() {
       style={{ backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
+         <Stack.Screen options={{ headerShown: false }} />
+  <View
+        style={{
+          flexDirection: "row",
+          padding: 16,
+          gap: 10,
+          paddingTop: 40,
+           justifyContent: "flex-end", 
+        }}
+      >
+<TouchableOpacity
+          onPress={() => router.push("/(app)/cart")}
+          style={{
+            width: 45,
+            height: 45,
+            backgroundColor: colors.primary,
+            borderRadius: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Ionicons name="cart" size={20} color={colors.background} />
+
+          {totalItems > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                top: -4,
+                right: -4,
+                backgroundColor: "red",
+                width: 18,
+                height: 18,
+                borderRadius: 9,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: colors.background, fontSize: 10 }}>
+                {totalItems}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
       <View>
+        
         <Image
           source={{ uri: product.thumbnail }}
           style={style.image}
           resizeMode="cover"
         />
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={[style.backBtn, { backgroundColor: colors.background }]}
-        >
-          <Ionicons name="arrow-back" size={20} color={colors.text} />
-        </TouchableOpacity>
+       
 
         <View style={[style.priceBadge, { backgroundColor: colors.primary }]}>
           <Text style={style.priceText}>${product.price}</Text>

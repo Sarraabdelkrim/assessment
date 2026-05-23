@@ -167,7 +167,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       return result;
     } catch (error) {
-      console.log("CHECKOUT ERROR:", error);
+      
       throw error;
     } finally {
       set({

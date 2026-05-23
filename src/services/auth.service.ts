@@ -3,9 +3,7 @@ import { storage } from "../services/storage.service";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-if (!API_URL) {
-  throw new Error("EXPO_PUBLIC_API_URL is not defined");
-}
+
 
 export const authService = {
   login: async (data: { username: string; password: string }) => {
@@ -44,7 +42,6 @@ export const authService = {
 
       const result = JSON.parse(text);
 
-     console.log("LOGIN RESULT:", result);
 
 await storage.setToken(result.accessToken);
       Toast.show({
@@ -65,9 +62,8 @@ await storage.setToken(result.accessToken);
         },
       };
     } catch (error: any) {
-      console.log("AUTH ERROR:", error);
+      
 
-      // fallback toast si erreur réseau
       if (!error.message.includes("Invalid")) {
         Toast.show({
           type: "error",

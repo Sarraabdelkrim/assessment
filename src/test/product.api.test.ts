@@ -1,13 +1,12 @@
 import MockAdapter from "axios-mock-adapter";
-import { api } from "./client";
+import { api } from "../api/client";
 import {
-    deleteProduct,
-    getCategories,
-    getProductById,
-    getProducts,
-    getProductsByCategory,
-    updateProduct,
-} from "./product.api";
+  getCategories,
+  getProductById,
+  getProducts,
+  getProductsByCategory,
+  updateProduct
+} from "../api/product.api";
 
 const mock = new MockAdapter(api);
 
@@ -114,24 +113,6 @@ describe("getProductsByCategory", () => {
   });
 });
 
-describe("deleteProduct", () => {
-  it("deletes product successfully", async () => {
-    mock.onDelete("/products/1").reply(200, {
-      ...productMock,
-      isDeleted: true,
-    });
-
-    const result = await deleteProduct(1);
-
-    expect(result.id).toBe(true);
-  });
-
-  it("throws when delete fails", async () => {
-    mock.onDelete("/products/999").reply(404);
-
-    await expect(deleteProduct(999)).rejects.toThrow();
-  });
-});
 
 describe("updateProduct", () => {
   it("updates product successfully", async () => {

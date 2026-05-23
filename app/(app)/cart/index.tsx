@@ -8,6 +8,7 @@ import DeleteModal from "@/src/components/DeleteModal";
 import { useCartStore } from "@/src/store/cart/cart.store";
 import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";
+import { Stack } from "expo-router";
 
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
@@ -91,9 +92,9 @@ export default function CartScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: colors.background ,paddingTop:50}}>
 
-
+ <Stack.Screen options={{ headerShown: false }} />
       <CartHeader
         totalItems={totalItems}
         onClear={handleClear}

@@ -69,25 +69,9 @@ export default function CategoryScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: colors.background ,marginTop: 40}}>
      
-      <Stack.Screen
-        options={{
-          title: title,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.replace("/home")}
-              style={{ paddingHorizontal: 10 }}
-            >
-              <Ionicons
-                name="arrow-back"
-                size={22}
-                color={colors.text}
-              />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+        <Stack.Screen options={{ headerShown: false }} />
       <View style={styles(colors).header}>
         <View
           style={[

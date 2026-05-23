@@ -30,7 +30,7 @@ export default function LoginScreen() {
   const { isActuallyBlocked, remainingTime } = useLoginBlockTimer();
 
   const handleLogin = async (data: any) => {
-     console.log("🔥 FORM DATA:", data);
+    
 
     try {
       if (isActuallyBlocked) {

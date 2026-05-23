@@ -9,7 +9,9 @@
     "continue": "Continue",
     "invalid_email": "Invalid email address",
     "required_field": "This field is required",
-    "email": "Email"
+    "email": "Email",
+    "noProductsFound": "No products found",
+    "notFound": "Not found"
   },
 
   "login": {
@@ -156,5 +158,11 @@
     "subtitle": "Are you sure you want to delete? This action cannot be undone.",
     "cancel": "Cancel",
     "confirm": "Delete"
+  },
+    "validation": {
+    "titleRequired": "Title is required",
+    "pricePositive": "Price must be a positive number",
+    "categoryRequired": "Category is required",
+    "descriptionRequired": "Description is required"
   }
 }

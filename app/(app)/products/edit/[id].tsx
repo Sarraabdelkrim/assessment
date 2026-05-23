@@ -19,6 +19,8 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
+
+import InputNumeric from "@/src/components/ui/NumberInput";
 import {
   ProductFormData,
   productSchema,
@@ -52,7 +54,6 @@ export default function EditProductScreen() {
     },
   });
 
-
   useEffect(() => {
     if (product) {
       reset({
@@ -64,13 +65,9 @@ export default function EditProductScreen() {
     }
   }, [product, reset]);
 
-
   const onSubmit = (data: ProductFormData) => {
     updateProduct(
-      {
-        id: productId,
-        data,
-      },
+      { id: productId, data },
       {
         onSuccess: () => {
           Toast.show({
@@ -78,7 +75,6 @@ export default function EditProductScreen() {
             text1: t("common.success"),
             text2: t("editProduct.success"),
           });
-
           router.back();
         },
         onError: () => {
@@ -94,7 +90,7 @@ export default function EditProductScreen() {
 
   if (isLoading) {
     return (
-      <View style={[style.loader, { backgroundColor: colors.background }]}>
+      <View style={style.loader}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -118,51 +114,61 @@ export default function EditProductScreen() {
   const disabled = isPending;
 
   return (
-    <ScrollView
-      style={{ backgroundColor: colors.background }}
-      contentContainerStyle={style.scroll}
-    >
+    <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={style.scroll}>
       <Text style={[style.title, { color: colors.text }]}>
         {t("editProduct.title")}
       </Text>
 
-      {fields.map(({ name, label, multiline }) => (
-        <View key={name} style={style.field}>
+      {fields.map((field) => (
+        <View key={field.name} style={style.field}>
           <Text style={[style.label, { color: colors.text }]}>
-            {label}
+            {field.label}
           </Text>
 
           <Controller
             control={control}
-            name={name}
-            render={({ field: { onChange, value } }) => (
-              <>
-                <TextInput
-                  value={String(value)}
-                  onChangeText={onChange}
-                  multiline={multiline}
-                  numberOfLines={multiline ? 4 : 1}
-                  keyboardType={name === "price" ? "numeric" : "default"}
-                  editable={!disabled}
-                  style={[
-                    style.input,
-                    {
-                      backgroundColor: colors.surface,
-                      borderColor: errors[name]
-                        ? colors.error
-                        : colors.border,
-                      color: colors.text,
-                    },
-                  ]}
-                />
+            name={field.name}
+            render={({ field: { onChange, value } }) => {
+              const errorMsg = errors[field.name]?.message as string | undefined;
 
-                {errors[name] && (
-                  <Text style={{ color: colors.error, fontSize: 12 }}>
-                    {errors[name]?.message as string}
-                  </Text>
-                )}
-              </>
-            )}
+              if (field.name === "price") {
+                return (
+                  <InputNumeric
+                    label=""
+                    value={Number(value)}
+                    onChange={onChange}
+                    disabled={disabled}
+                    error={errorMsg}
+                  />
+                );
+              }
+
+              return (
+                <>
+                  <TextInput
+                    value={String(value ?? "")}
+                    onChangeText={onChange}
+                    multiline={field.multiline}
+                    numberOfLines={field.multiline ? 4 : 1}
+                    editable={!disabled}
+                    style={[
+                      style.input,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: errorMsg ? colors.error : colors.border,
+                        color: colors.text,
+                      },
+                    ]}
+                  />
+
+                  {errorMsg ? (
+                    <Text style={{ color: colors.error, fontSize: 12 }}>
+                      {errorMsg}
+                    </Text>
+                  ) : null}
+                </>
+              );
+            }}
           />
         </View>
       ))}
@@ -190,6 +196,7 @@ export default function EditProductScreen() {
   );
 }
 
+/* ================= STYLE ================= */
 
 const styles = (colors: typeof lightColors) =>
   StyleSheet.create({

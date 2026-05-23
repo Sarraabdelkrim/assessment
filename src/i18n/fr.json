@@ -9,7 +9,9 @@
     "continue": "Continuer",
     "invalid_email": "Adresse email invalide",
     "required_field": "Ce champ est requis",
-    "email": "Email"
+    "email": "Email",
+    "noProductsFound": "Aucun produit trouvé",
+    "notFound": "Non trouvé"
   },
 
   "login": {
@@ -156,5 +158,12 @@
     "subtitle": "Voulez-vous vraiment supprimer ? Cette action est irréversible.",
     "cancel": "Annuler",
     "confirm": "Supprimer"
+  },
+  
+  "validation": {
+    "titleRequired": "Le titre est obligatoire",
+    "pricePositive": "Le prix doit être positif",
+    "categoryRequired": "La catégorie est obligatoire",
+    "descriptionRequired": "La description est obligatoire"
   }
 }

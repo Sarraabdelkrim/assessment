@@ -1,11 +1,43 @@
+import { useMemo } from "react";
+import { Text, View } from "react-native";
+
+import { useCartStore } from "@/src/store/cart/cart.store";
+import { useThemeStore } from "@/src/store/theme.store";
+import { darkColors, lightColors } from "@/src/theme/colors";
+
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
+  const dark = useThemeStore((s) => s.dark);
+  const colors = dark ? darkColors : lightColors;
+
+  const totalItems = useCartStore((s) =>
+    s.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
+
+  const tabKey = dark ? "dark" : "light";
+
+  const tabBarStyle = useMemo(
+    () => ({
+      backgroundColor: colors.card,
+      borderTopColor: colors.border,
+    }),
+    [colors.card, colors.border]
+  );
+
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
-      
-      {/* HOME */}
+    <Tabs
+      key={tabKey}
+      screenOptions={{
+        headerShown: false,
+
+        tabBarStyle,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+      }}
+    >
+    
       <Tabs.Screen
         name="home"
         options={{
@@ -16,7 +48,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* PRODUCTS */}
+
       <Tabs.Screen
         name="products"
         options={{
@@ -27,18 +59,46 @@ export default function TabLayout() {
         }}
       />
 
-      {/* CART */}
+     
       <Tabs.Screen
         name="cart"
         options={{
           title: "Cart",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cart" color={color} size={size} />
+            <View style={{ width: 24, height: 24 }}>
+              <Ionicons name="cart" color={color} size={size} />
+
+              {totalItems > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -6,
+                    right: -10,
+                    backgroundColor: "red",
+                    minWidth: 16,
+                    height: 16,
+                    borderRadius: 8,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 10,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {totalItems}
+                  </Text>
+                </View>
+              )}
+            </View>
           ),
         }}
       />
 
-      {/* PROFILE */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -48,7 +108,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
     </Tabs>
   );
 }

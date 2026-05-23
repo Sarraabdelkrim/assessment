@@ -78,18 +78,18 @@ export default function Home() {
           )}
 
         {filtered?.map((category) => (
-  <CategoryRow
-    key={category}
-    category={category}
-    onPressSeeAll={(cat) => {
-      router.push({
-        pathname: "/(app)/products/category",
-        params: { category: cat },
-      });
-    }}
-    onPressProduct={(product) => addItem(product)}
-  />
-))}
+          <CategoryRow
+            key={category}
+            category={category}
+            onPressSeeAll={(cat) => {
+              router.push({
+                pathname: "/(app)/products/category",
+                params: { category: cat },
+              });
+            }}
+            onPressProduct={(product) => addItem(product)}
+          />
+        ))}
 
          {filtered?.length === 0 && (
   <View style={style.empty}>

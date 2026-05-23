@@ -3,6 +3,7 @@ import { useTranslation } from "@/src/i18n/useTranslation";
 import { useCartStore } from "@/src/store/cart/cart.store";
 import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";
+import { Fonts } from "@/src/theme/fonts";
 import type { Product } from "@/src/types/product.types";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -151,22 +152,50 @@ const { t } = useTranslation();
               </Text>
 
               <TouchableOpacity
-                onPress={() => handleAdd(item)}
-                style={{
-                  marginTop: 8,
-                  backgroundColor: colors.primary,
-                  padding: 8,
-                  borderRadius: 8,
-                }}
-              >
-                <Text style={{ color: colors.background, fontSize: 10 }}>
-               {t("cart.add")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-      />
-    </View>
-  );
-}
+            onPress={() => handleAdd(item)}
+            style={{
+              marginTop: 8,
+              backgroundColor: colors.surface,
+              padding: 10,
+              borderRadius: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+
+            <Image
+              source={{ uri: item.thumbnail }}
+              style={{
+                width: 35,
+                height: 35,
+                borderRadius: 8,
+              }}
+              resizeMode="cover"
+            />
+
+            
+            <Text
+              numberOfLines={1}
+              style={{
+                flex: 1,
+                color: colors.text,
+                fontSize: 12,
+                fontFamily: Fonts.brandBold,
+              }}
+            >
+              {item.title}
+            </Text>
+
+
+            <Text style={{ color: colors.primary, fontSize: 11 }}>
+              {t("cart.add")}
+            </Text>
+          </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                />
+              </View>
+            );
+          }

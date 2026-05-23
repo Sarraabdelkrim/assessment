@@ -1,5 +1,3 @@
-import { authService } from "@/src/services/auth.service";
-import { storage } from "@/src/services/storage.service";
 import { create } from "zustand";
 
 type User = {
@@ -14,55 +12,59 @@ type User = {
 type AuthState = {
   token: string | null;
   user: User | null;
+
   isLoading: boolean;
+  isHydrated: boolean;
 
   loginAttempts: number;
   isBlocked: boolean;
   blockedUntil: number | null;
 
+  sessionStart: number | null;
+
+  hydrate: () => Promise<void>;
   login: (data: { username: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
-  hydrate: () => Promise<void>;
-   resetAttempts: () => void;
+
+  checkSession: () => void;
 };
 
+const SESSION_TIMEOUT = 2 * 60 * 1000; 
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 export const useAuthStore = create<AuthState>((set, get) => ({
+
   token: null,
   user: null,
-  isLoading: false,
 
- 
+  isLoading: false,
+  isHydrated: false,
+
   loginAttempts: 0,
   isBlocked: false,
   blockedUntil: null,
 
-  resetAttempts: () =>
-    set({
-      loginAttempts: 0,
-      isBlocked: false,
-      blockedUntil: null,
-    }),
+  sessionStart: null,
 
+  // 🔄 INIT APP
   hydrate: async () => {
-    const token = await storage.getToken();
-
-    if (token) {
-      set({ token });
-    }
+    set({
+      token: null,
+      user: null,
+      isHydrated: true,
+      sessionStart: null,
+    });
   },
 
-  
+  // 🔐 LOGIN (FIXED DUMMYJSON)
   login: async (data) => {
     const { loginAttempts, isBlocked, blockedUntil } = get();
 
-    console.log("🔐 LOGIN ATTEMPT:", data);
-
-    
+    // 🚫 BLOCK CHECK
     if (isBlocked && blockedUntil && Date.now() < blockedUntil) {
-      throw new Error("ACCOUNT_TEMPORARILY_BLOCKED");
+      throw new Error("ACCOUNT_BLOCKED");
     }
 
-   
+    // ♻️ RESET BLOCK IF EXPIRED
     if (isBlocked && blockedUntil && Date.now() > blockedUntil) {
       set({
         isBlocked: false,
@@ -74,14 +76,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
 
-      const { token, user } = await authService.login(data);
+    const response = await fetch(`${API_URL}/auth/login`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  body: JSON.stringify({
+    username: data.username.trim(),
+    password: data.password,
+    expiresInMins: 30,
+  }),
+});
 
-      await storage.setToken(token);
+      const result = await response.json();
 
+    
+      if (!response.ok || !result.accessToken) {
+        throw new Error("INVALID_CREDENTIALS");
+      }
 
+    
       set({
-        token,
-        user,
+        token: result.accessToken,
+        user: result,
+        sessionStart: Date.now(),
+
         loginAttempts: 0,
         isBlocked: false,
         blockedUntil: null,
@@ -90,16 +110,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (error) {
       const attempts = loginAttempts + 1;
 
-      const shouldBlock = attempts >= 3;
-
-      //console.log("❌ LOGIN FAILED");
-
       set({
+        token: null,
+        user: null,
+
         loginAttempts: attempts,
-        isBlocked: shouldBlock,
-        blockedUntil: shouldBlock
-          ? Date.now() + 5 * 60 * 1000
-          : null,
+        isBlocked: attempts >= 3,
+        blockedUntil:
+          attempts >= 3
+            ? Date.now() + 5 * 60 * 1000
+            : null,
       });
 
       throw error;
@@ -108,16 +128,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
- 
-  logout: async () => {
-    await storage.removeToken();
 
+  logout: async () => {
     set({
       token: null,
       user: null,
+      sessionStart: null,
       loginAttempts: 0,
       isBlocked: false,
       blockedUntil: null,
     });
+  },
+
+
+  checkSession: () => {
+    const state = get();
+
+    if (!state.token || !state.sessionStart) return;
+
+    const now = Date.now();
+
+    if (now - state.sessionStart > SESSION_TIMEOUT) {
+    
+      state.logout();
+    }
   },
 }));

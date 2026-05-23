@@ -1,50 +1,119 @@
-# Welcome to your Expo app 👋
+# 🛍️ E-Commerce Mobile App (React Native + Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📌 Introduction
 
-## Get started
+Ce projet est une application mobile e-commerce développée avec **React Native (Expo)**.
+Elle permet aux utilisateurs de parcourir des produits, consulter les détails, gérer un panier (cart) et simuler un système d’authentification sécurisé.
 
-1. Install dependencies
+L’objectif principal est de construire une application **moderne, scalable et proche d’un projet réel en entreprise**.
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## 🚀 Fonctionnalités principales
 
-   ```bash
-   npx expo start
-   ```
+### 🔐 Authentification
+- Login utilisateur
+- Gestion de session
+- Blocage après plusieurs tentatives échouées
+- Auto logout (session expiration)
+- Protection des écrans sensibles contre les screenshots
+- Gestion du timeout de session automatique
+- Vérification de l’état d’authentification au lancement de l’app
 
-In the output, you'll find options to open the app in a
+### 🛍️ Produits
+- Liste des produits
+- Détails produit
+- Recherche par catégorie
+- Pagination
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 🛒 Panier (Cart)
+- Ajouter un produit au panier
+- Modifier quantité
+- Supprimer un produit
+- Calcul total automatique
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 🎨 UI/UX
+- Mode dark/light
+- Interface responsive
+- Navigation fluide avec Expo Router
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🧱 Architecture du projet
+
+Le projet est structuré comme suit :
+src/
+│
+├── api/ # appels API (products, cart, auth)
+├── store/ # Zustand state management
+├── hooks/ # custom hooks (React Query)
+├── types/ # types TypeScript
+├── theme/ # colors, fonts
+├── i18n/ # internationalisation
+└── utils/ # helpers
+
+
+---
+
+## ⚙️ Technologies utilisées
+
+- React Native (Expo)
+- TypeScript
+- Expo Router
+- Zustand (state management)
+- React Query (data fetching)
+- Axios
+- Jest + axios-mock-adapter (unit tests)
+
+---
+
+## 🧪 Tests unitaires
+
+Le projet inclut des tests unitaires pour assurer la fiabilité des APIs.
+
+### ✔ Cart API tests :
+- getCarts
+- getCartById
+- getCartsByUser
+- addCart
+- updateCart
+- deleteCart
+
+### ✔ Produits API tests :
+- getProducts
+- getProductById
+- getCategories
+
+Tests réalisés avec :
+- Jest
+- Axios Mock Adapter
+
+---
+
+## 🔐 Sécurité (Auth System)
+
+- Gestion des tentatives de login
+- Blocage temporaire après 3 essais échoués
+- Session expiration automatique
+- Protection des routes avec Expo Router
+
+---
+
+## 📱 Navigation
+
+Le routing est géré avec :
+
+- `(auth)` → Login / Register
+- `(app)` → Home / Products / Cart
+
+Protection des routes :
+- Si non connecté → redirection login
+- Si connecté → accès app
+
+---
+
+## 📦 Installation
 
 ```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+npm install
+npx expo start
