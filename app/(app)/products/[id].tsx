@@ -69,15 +69,28 @@ export default function ProductDetailScreen() {
       showsVerticalScrollIndicator={false}
     >
          <Stack.Screen options={{ headerShown: false }} />
-  <View
-        style={{
-          flexDirection: "row",
-          padding: 16,
-          gap: 10,
-          paddingTop: 40,
-           justifyContent: "flex-end", 
-        }}
-      >
+ <View
+  style={{
+    flexDirection: "row",
+    padding: 16,
+    paddingTop: 40,
+    justifyContent: "space-between",
+    alignItems: "center",
+  }}
+>
+          <TouchableOpacity
+    onPress={() => router.back()}
+    style={{
+      width: 45,
+      height: 45,
+      backgroundColor: colors.background,
+      borderRadius: 10,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Ionicons name="arrow-back" size={20} color={colors.text} />
+  </TouchableOpacity>
 <TouchableOpacity
           onPress={() => router.push("/(app)/cart")}
           style={{

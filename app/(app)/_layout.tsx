@@ -1,11 +1,10 @@
 import { useMemo } from "react";
-import { Text, View } from "react-native";
 
 import { useCartStore } from "@/src/store/cart/cart.store";
 import { useThemeStore } from "@/src/store/theme.store";
 import { darkColors, lightColors } from "@/src/theme/colors";
 
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
@@ -49,56 +48,15 @@ export default function TabLayout() {
       />
 
 
-      <Tabs.Screen
-        name="products"
-        options={{
-          title: "Products",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="shopping-bag" color={color} size={size} />
-          ),
-        }}
-      />
-
      
+
+    
       <Tabs.Screen
-        name="cart"
-        options={{
-          title: "Cart",
-          tabBarIcon: ({ color, size }) => (
-            <View style={{ width: 24, height: 24 }}>
-              <Ionicons name="cart" color={color} size={size} />
-
-              {totalItems > 0 && (
-                <View
-                  style={{
-                    position: "absolute",
-                    top: -6,
-                    right: -10,
-                    backgroundColor: "red",
-                    minWidth: 16,
-                    height: 16,
-                    borderRadius: 8,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingHorizontal: 4,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 10,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {totalItems}
-                  </Text>
-                </View>
-              )}
-            </View>
-          ),
-        }}
-      />
-
+  name="cart"
+  options={{
+    href: null,
+  }}
+/>
       <Tabs.Screen
         name="profile"
         options={{
@@ -108,6 +66,12 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+  name="products"
+  options={{
+    href: null,
+  }}
+/>
     </Tabs>
   );
 }

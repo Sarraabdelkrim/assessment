@@ -4,6 +4,7 @@ import CartItemComponent from "@/src/components/cart/CartItem";
 import EmptyCart from "@/src/components/cart/EmptyCart";
 
 import DeleteModal from "@/src/components/DeleteModal";
+import { useTranslation } from "@/src/i18n/useTranslation";
 
 import { useCartStore } from "@/src/store/cart/cart.store";
 import { useThemeStore } from "@/src/store/theme.store";
@@ -17,7 +18,7 @@ import Toast from "react-native-toast-message";
 export default function CartScreen() {
   const dark = useThemeStore((s) => s.dark);
   const colors = dark ? darkColors : lightColors;
-
+  const { t } = useTranslation();
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -45,13 +46,15 @@ export default function CartScreen() {
       await checkout(1);
 
       Toast.show({
-        type: "success",
-        text1: "Order success",
-      });
+  type: "success",
+  text1: t("checkout.successTitle"),
+  text2: t("checkout.successMessage"),
+  visibilityTime: 3000,
+});
     } catch {
       Toast.show({
         type: "error",
-        text1: "Order failed",
+        text1: t("checkout.errorMessage"),
       });
     }
   }, [checkout]);

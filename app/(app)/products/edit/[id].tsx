@@ -196,7 +196,7 @@ export default function EditProductScreen() {
   );
 }
 
-/* ================= STYLE ================= */
+
 
 const styles = (colors: typeof lightColors) =>
   StyleSheet.create({

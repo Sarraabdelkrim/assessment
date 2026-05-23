@@ -1,3 +1,4 @@
+import { DeviceSecurity } from "@/src/security/device.security";
 import { create } from "zustand";
 
 type User = {
@@ -29,10 +30,11 @@ type AuthState = {
   checkSession: () => void;
 };
 
-const SESSION_TIMEOUT = 2 * 60 * 1000; 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-export const useAuthStore = create<AuthState>((set, get) => ({
+const SESSION_TIMEOUT = 1 * 60 * 1000; 
 
+const API_URL = "https://dummyjson.com/auth/login";
+
+export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
   user: null,
 
@@ -45,7 +47,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   sessionStart: null,
 
-  // 🔄 INIT APP
+
   hydrate: async () => {
     set({
       token: null,
@@ -55,17 +57,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  // 🔐 LOGIN (FIXED DUMMYJSON)
-  login: async (data) => {
-    const { loginAttempts, isBlocked, blockedUntil } = get();
 
-    // 🚫 BLOCK CHECK
-    if (isBlocked && blockedUntil && Date.now() < blockedUntil) {
+  login: async (data) => {
+    const state = get();
+
+
+    DeviceSecurity.assertRealDevice();
+
+    
+    if (
+      state.isBlocked &&
+      state.blockedUntil &&
+      Date.now() < state.blockedUntil
+    ) {
       throw new Error("ACCOUNT_BLOCKED");
     }
 
-    // ♻️ RESET BLOCK IF EXPIRED
-    if (isBlocked && blockedUntil && Date.now() > blockedUntil) {
+ 
+    if (
+      state.isBlocked &&
+      state.blockedUntil &&
+      Date.now() > state.blockedUntil
+    ) {
       set({
         isBlocked: false,
         loginAttempts: 0,
@@ -76,39 +89,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
 
-    const response = await fetch(`${API_URL}/auth/login`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  body: JSON.stringify({
-    username: data.username.trim(),
-    password: data.password,
-    expiresInMins: 30,
-  }),
-});
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          username: data.username.trim(),
+          password: data.password,
+          expiresInMins: 30,
+        }),
+      });
 
       const result = await response.json();
 
-    
       if (!response.ok || !result.accessToken) {
         throw new Error("INVALID_CREDENTIALS");
       }
 
-    
+      DeviceSecurity.logDeviceInfo();
+
       set({
         token: result.accessToken,
         user: result,
+
         sessionStart: Date.now(),
 
         loginAttempts: 0,
         isBlocked: false,
         blockedUntil: null,
       });
-
     } catch (error) {
-      const attempts = loginAttempts + 1;
+      const attempts = state.loginAttempts + 1;
 
       set({
         token: null,
@@ -116,10 +129,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         loginAttempts: attempts,
         isBlocked: attempts >= 3,
-        blockedUntil:
-          attempts >= 3
-            ? Date.now() + 5 * 60 * 1000
-            : null,
+        blockedUntil: attempts >= 3 ? Date.now() + 5 * 60 * 1000 : null,
       });
 
       throw error;
@@ -127,7 +137,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: false });
     }
   },
-
 
   logout: async () => {
     set({
@@ -140,7 +149,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-
   checkSession: () => {
     const state = get();
 
@@ -149,7 +157,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const now = Date.now();
 
     if (now - state.sessionStart > SESSION_TIMEOUT) {
-    
+      console.log("⏱ SESSION EXPIRED");
       state.logout();
     }
   },

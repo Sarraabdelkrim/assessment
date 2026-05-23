@@ -164,5 +164,16 @@
     "pricePositive": "Price must be a positive number",
     "categoryRequired": "Category is required",
     "descriptionRequired": "Description is required"
+  },
+ "checkout": {
+    "title": "Checkout",
+    "subtotal": "Subtotal",
+    "placeOrder": "Place Order",
+    "success": "Order placed successfully",
+    "error": "Failed to place order",
+    "successTitle": "Thank you for your purchase!",
+    "successMessage": "Your order has been placed successfully.",
+    "errorMessage": "An error occurred while placing your order. Please try again."
+
   }
 }

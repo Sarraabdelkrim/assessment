@@ -165,5 +165,14 @@
     "pricePositive": "Le prix doit être positif",
     "categoryRequired": "La catégorie est obligatoire",
     "descriptionRequired": "La description est obligatoire"
+  },
+  "checkout": {
+    "title": "Passer la commande",
+    "processing": "Traitement de votre commande...",
+    "success": "Commande réussie !",
+    "error": "Échec de la commande. Veuillez réessayer.",
+    "successTitle": "Merci pour votre achat !",
+    "successMessage": "Votre commande  a été créée avec succès.",
+    "errorMessage": "Une erreur est survenue lors de la création de votre commande. Veuillez réessayer."
   }
 }
