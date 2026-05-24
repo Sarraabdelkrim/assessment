@@ -20,6 +20,7 @@ import {
 import { darkColors, lightColors } from "@/src/theme/colors";
 
 export default function RootLayout() {
+  
    const dark = useThemeStore((s) => s.dark);
     const colors = dark ? darkColors : lightColors;
   const [fontsLoaded] = useFonts({

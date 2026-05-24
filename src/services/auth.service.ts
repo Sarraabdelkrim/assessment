@@ -19,7 +19,8 @@ export const authService = {
           expiresInMins: 30,
         }),
       });
-
+      
+console .log("Login response:", res);
       const text = await res.text();
 
       if (!res.ok) {
@@ -30,7 +31,6 @@ export const authService = {
           message = err?.message || message;
         } catch {}
 
-        // 🚨 TOAST ERROR ICI
         Toast.show({
           type: "error",
           text1: "Login failed",
