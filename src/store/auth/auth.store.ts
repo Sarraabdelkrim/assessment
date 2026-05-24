@@ -36,6 +36,8 @@ type AuthState = {
 
   logout: () => Promise<void>;
 
+  resetAttempts: () => void;
+
   checkSession: () => void;
 };
 
@@ -55,7 +57,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   sessionStart: null,
 
-  
   hydrate: async () => {
     const savedToken = await TokenSecurity.getToken();
 
@@ -65,31 +66,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  
+
   login: async (data) => {
     const state = get();
 
-    // block l'emulateurrr
+  
     DeviceSecurity.assertRealDevice();
-
-    // block  jailBreak
     RootSecurity.assertSafeDevice();
 
-    // account bloque 
-    if (
-      state.isBlocked &&
-      state.blockedUntil &&
-      Date.now() < state.blockedUntil
-    ) {
+ 
+    if (state.isBlocked && state.blockedUntil && Date.now() < state.blockedUntil) {
       throw new Error("ACCOUNT_BLOCKED");
     }
 
-    // resete bloque 
-    if (
-      state.isBlocked &&
-      state.blockedUntil &&
-      Date.now() > state.blockedUntil
-    ) {
+    
+    if (state.isBlocked && state.blockedUntil && Date.now() > state.blockedUntil) {
       set({
         isBlocked: false,
         loginAttempts: 0,
@@ -100,7 +91,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
 
-      // device finger print
       const fingerprint = FingerprintSecurity.getFingerprint();
 
       const response = await fetch(API_URL, {
@@ -113,7 +103,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           username: data.username.trim(),
           password: data.password,
           expiresInMins: 30,
-
           fingerprint,
         }),
       });
@@ -124,33 +113,31 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error("INVALID_CREDENTIALS");
       }
 
-      // security token 
+     
       await TokenSecurity.saveToken(result.accessToken);
 
       set({
         token: result.accessToken,
         user: result,
-
         sessionStart: Date.now(),
 
         loginAttempts: 0,
         isBlocked: false,
         blockedUntil: null,
       });
+
     } catch (error) {
       const attempts = state.loginAttempts + 1;
+
+      const blocked = attempts >= 3;
 
       set({
         token: null,
         user: null,
 
         loginAttempts: attempts,
-        isBlocked: attempts >= 3,
-
-        blockedUntil:
-          attempts >= 3
-            ? Date.now() + 5 * 60 * 1000
-            : null,
+        isBlocked: blocked,
+        blockedUntil: blocked ? Date.now() + 5 * 60 * 1000 : null,
       });
 
       throw error;
@@ -159,28 +146,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+
   logout: async () => {
     await TokenSecurity.removeToken();
 
     set({
       token: null,
       user: null,
-
       sessionStart: null,
-
       loginAttempts: 0,
       isBlocked: false,
       blockedUntil: null,
     });
   },
 
-  // session d'expiration 
+  resetAttempts: () => {
+    set({
+      loginAttempts: 0,
+      isBlocked: false,
+      blockedUntil: null,
+    });
+  },
+
   checkSession: () => {
     const state = get();
 
-    if (!state.token || !state.sessionStart) {
-      return;
-    }
+    if (!state.token || !state.sessionStart) return;
 
     const now = Date.now();
 
