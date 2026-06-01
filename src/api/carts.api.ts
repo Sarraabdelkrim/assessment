@@ -1,6 +1,6 @@
 
+import { api } from "@/src/constant/api";
 import type { CartItem, CreateCart, DeletedCart, UpdateCart } from "../types/cart.types";
-import { api } from "./client";
 
 export const getCarts = async (): Promise<CartItem[]> => {
   const res = await api.get("/carts");

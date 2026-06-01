@@ -1,75 +1,111 @@
 import { router } from "expo-router";
 import { useEffect } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Alert, Image, StyleSheet, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-import { Fonts } from "@/src/theme/fonts";
-import { useTranslation } from "../src/i18n/useTranslation";
 import { useAuthStore } from "../src/store/auth/auth.store";
 import { useThemeStore } from "../src/store/theme.store";
 import { darkColors, lightColors } from "../src/theme/colors";
 
-export default function Splash() {
-  const token = useAuthStore((s) => s.token);
-  const dark = useThemeStore((s) => s.dark);
-  const { t } = useTranslation();
+import { DeviceSecurity } from "@/src/security/device.security";
 
+export default function Splash() {
+  const {
+    token,
+    sessionStart,
+    isBlocked,
+    blockedUntil,
+    logout,
+  } = useAuthStore();
+
+  const dark = useThemeStore((s) => s.dark);
   const colors = dark ? darkColors : lightColors;
- const style = styles(colors); 
+
+  const SESSION_TIMEOUT = 1 * 60 * 1000;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace(token ? "/(app)/home" : "/(auth)/login");
-    }, 2000);
+  const timer = setTimeout(async () => {
+    try {
+      // vérifier si le device est autorisé à utiliser l’application
+      DeviceSecurity.assertRealDevice();
+    } catch (e) {
+      Alert.alert(
+        "Security Alert",
+        "This device is not allowed to run this application."
+      );
 
-    return () => clearTimeout(timer);
-  }, [token]);
+      // rediriger vers login si device non valide
+      router.replace("/(auth)/login");
+      return;
+    }
 
+    // vérifier si le compte est bloqué à cause des tentatives de login
+    if (isBlocked && blockedUntil && Date.now() < blockedUntil) {
+      Alert.alert(
+        "Account Blocked",
+        "Too many login attempts. Please try again later."
+      );
+
+      // redirection vers login si utilisateur bloqué
+      router.replace("/(auth)/login");
+      return;
+    }
+
+    // vérifier si la session a expiré
+    if (token && sessionStart) {
+      const isExpired =
+        Date.now() - sessionStart > SESSION_TIMEOUT;
+
+      if (isExpired) {
+        await logout();
+
+        Alert.alert(
+          "Session Expired",
+          "Please login again."
+        );
+
+        // redirection après expiration de session
+        router.replace("/(auth)/login");
+        return;
+      }
+    }
+
+    // navigation principale selon l’état de connexion
+    if (token) {
+      router.replace("/(app)/home");
+    } else {
+      router.replace("/(auth)/login");
+    }
+  }, 2000);
+
+  return () => clearTimeout(timer);
+}, [token, isBlocked, blockedUntil, sessionStart]);
   return (
-    <View style={[style.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       
-   
-      <View
-        style={
-          style.glow
-         
-        }
-      />
+      <View style={styles.glow} />
 
       <Animated.View
         entering={FadeInDown.duration(600)}
-        style={style.logoContainer}
+        style={styles.logoContainer}
       >
         <Image
           source={require("../assets/images/wolt-logo.png")}
-          style={style.logo}
+          style={styles.logo}
         />
       </Animated.View>
 
-   
       <Animated.Text
         entering={FadeInDown.delay(200)}
-        style={[
-          style.title,
-          {
-            color: colors.text,
-          },
-        ]}
+        style={[styles.title, { color: colors.text }]}
       >
-        {t("login.tagline")}
+        Welcome
       </Animated.Text>
-
-    
-     
 
     </View>
   );
 }
-
-
-
-const styles = (colors: typeof lightColors) => StyleSheet.create({
-
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
@@ -83,6 +119,7 @@ const styles = (colors: typeof lightColors) => StyleSheet.create({
     borderRadius: 130,
     opacity: 0.15,
     top: "30%",
+    backgroundColor: "#6c5ce7",
   },
 
   logoContainer: {
@@ -99,13 +136,7 @@ const styles = (colors: typeof lightColors) => StyleSheet.create({
 
   title: {
     fontSize: 20,
-    fontFamily: Fonts.brand,
-    textAlign: "center",
+    fontWeight: "600",
     marginTop: 10,
-  },
-
-  loading: {
-    marginTop: 15,
-    fontSize: 14,
   },
 });

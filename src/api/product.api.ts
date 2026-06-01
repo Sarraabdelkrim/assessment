@@ -1,6 +1,6 @@
+import { api } from "@/src/constant/api";
 import type { ProductsResponse } from "@/src/types/api.types";
 import type { Product } from "@/src/types/product.types";
-import { api } from "./client";
 
 
 export const getProducts = async (params: {

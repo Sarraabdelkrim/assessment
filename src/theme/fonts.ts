@@ -1,7 +1,23 @@
+import {
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+} from "@expo-google-fonts/nunito";
+
+export const appFonts = {
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+};
+
 export const Fonts = {
-  brand: "Nunito_400Regular",
-  brandSemiBold: "Nunito_600SemiBold",
-  brandBold: "Nunito_700Bold",
-  brandExtraBold: "Nunito_800ExtraBold",
-  brandBlack: "Nunito_900Black",
+  regular: "Nunito_400Regular",
+  semiBold: "Nunito_600SemiBold",
+  bold: "Nunito_700Bold",
+  extraBold: "Nunito_800ExtraBold",
+  black: "Nunito_900Black",
 };

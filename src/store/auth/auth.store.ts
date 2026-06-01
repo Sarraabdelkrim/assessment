@@ -1,8 +1,9 @@
 import { create } from "zustand";
 
+import { api } from "@/src/constant/api";
+import { DeviceSecurityNative } from "@/src/native/deviceSecurity";
 import { DeviceSecurity } from "@/src/security/device.security";
 import { FingerprintSecurity } from "@/src/security/fingerprint.security";
-import { RootSecurity } from "@/src/security/root.security";
 import { TokenSecurity } from "@/src/security/token.security";
 
 type User = {
@@ -37,12 +38,9 @@ type AuthState = {
   logout: () => Promise<void>;
 
   resetAttempts: () => void;
-
-  checkSession: () => void;
 };
 
 const SESSION_TIMEOUT = 1 * 60 * 1000;
-const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/auth/login`;
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
@@ -58,29 +56,44 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   sessionStart: null,
 
   hydrate: async () => {
+    // récupérer le token sauvegardé dans le storage sécurisé
     const savedToken = await TokenSecurity.getToken();
 
+    // mettre à jour l'état du store avec le token récupéré
+    // et indiquer que le chargement est terminée
     set({
       token: savedToken,
       isHydrated: true,
     });
   },
 
+ login: async (data) => {
+  const state = get();
 
-  login: async (data) => {
-    const state = get();
+  try {
+    // sécurité device (root / jailbreak native module)
+    if (DeviceSecurityNative.isRooted()) {
+      throw new Error("DEVICE_COMPROMISED");
+    }
 
-  
+    //  vérifier si c’est un vrai device 
     DeviceSecurity.assertRealDevice();
-    RootSecurity.assertSafeDevice();
 
- 
-    if (state.isBlocked && state.blockedUntil && Date.now() < state.blockedUntil) {
+    //  check blocage compte
+    if (
+      state.isBlocked &&
+      state.blockedUntil &&
+      Date.now() < state.blockedUntil
+    ) {
       throw new Error("ACCOUNT_BLOCKED");
     }
 
-    
-    if (state.isBlocked && state.blockedUntil && Date.now() > state.blockedUntil) {
+    //  reset blocage si expiré
+    if (
+      state.isBlocked &&
+      state.blockedUntil &&
+      Date.now() > state.blockedUntil
+    ) {
       set({
         isBlocked: false,
         loginAttempts: 0,
@@ -88,66 +101,57 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
     }
 
-    try {
-      set({ isLoading: true });
+    //  loading
+    set({ isLoading: true });
 
-      const fingerprint = FingerprintSecurity.getFingerprint();
+    //  fingerprint device
+    const fingerprint = FingerprintSecurity.getFingerprint();
+    console.log("fingerprint genere :", fingerprint);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          username: data.username.trim(),
-          password: data.password,
-          expiresInMins: 30,
-          fingerprint,
-        }),
-      });
+    //  API call
+    const response = await api.post("/auth/login", {
+      username: data.username.trim(),
+      password: data.password,
+      expiresInMins: 30,
+      fingerprint,
+    });
 
-      const result = await response.json();
+    const result = response.data;
 
-      if (!response.ok || !result.accessToken) {
-        throw new Error("INVALID_CREDENTIALS");
-      }
+    //  save token secure
+    await TokenSecurity.saveToken(result.accessToken);
 
-     
-      await TokenSecurity.saveToken(result.accessToken);
+    //  update store
+    set({
+      token: result.accessToken,
+      user: result,
+      sessionStart: Date.now(),
+      loginAttempts: 0,
+      isBlocked: false,
+      blockedUntil: null,
+    });
 
-      set({
-        token: result.accessToken,
-        user: result,
-        sessionStart: Date.now(),
+  } catch (error) {
+    // blocage logique
+    const attempts = state.loginAttempts + 1;
+    const blocked = attempts >= 3;
 
-        loginAttempts: 0,
-        isBlocked: false,
-        blockedUntil: null,
-      });
+    set({
+      token: null,
+      user: null,
+      loginAttempts: attempts,
+      isBlocked: blocked,
+      blockedUntil: blocked ? Date.now() + 5 * 60 * 1000 : null,
+    });
 
-    } catch (error) {
-      const attempts = state.loginAttempts + 1;
+    throw error;
 
-      const blocked = attempts >= 3;
-
-      set({
-        token: null,
-        user: null,
-
-        loginAttempts: attempts,
-        isBlocked: blocked,
-        blockedUntil: blocked ? Date.now() + 5 * 60 * 1000 : null,
-      });
-
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-
+  } finally {
+    set({ isLoading: false });
+  }
+},
   logout: async () => {
+    // supprimer le token du storage sécurisé
     await TokenSecurity.removeToken();
 
     set({
@@ -166,17 +170,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       isBlocked: false,
       blockedUntil: null,
     });
-  },
-
-  checkSession: () => {
-    const state = get();
-
-    if (!state.token || !state.sessionStart) return;
-
-    const now = Date.now();
-
-    if (now - state.sessionStart > SESSION_TIMEOUT) {
-      state.logout();
-    }
   },
 }));

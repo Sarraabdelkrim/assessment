@@ -30,25 +30,28 @@ export default function LoginScreen() {
   const { isActuallyBlocked, remainingTime } = useLoginBlockTimer();
 
   const handleLogin = async (data: any) => {
+
+
+  try {
+   
+   
+
+    await login({
+      username: data.username,
+      password: data.password,
+    });
+
     
 
-    try {
-      if (isActuallyBlocked) {
-        return;
-      }
-
-      await login({
-        username: data.username,
-        password: data.password,
-      });
-
-      router.replace("/(app)/home");
-    } catch (e: any) {
-      if (e.message === "USER_BLOCKED") {
-        router.replace("/(auth)/forgot-password");
-      }
+    router.replace("/(app)/home");
+  } catch (e: any) {
+ 
+    if (e?.message === "USER_BLOCKED") {
+     
+      router.replace("/(auth)/forgot-password");
     }
-  };
+  }
+};
 
   return (
     <View style={styles(colors).container}>

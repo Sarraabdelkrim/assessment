@@ -1,20 +1,22 @@
 // hooks/cart.hooks.ts
 import {
-    addCart,
-    deleteCart,
-    getCartById,
-    getCarts,
-    getCartsByUser,
-    updateCart,
+  addCart,
+  deleteCart,
+  getCartById,
+  getCarts,
+  getCartsByUser,
+  updateCart,
 } from "@/src/api/carts.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { CartItem, CreateCart, UpdateCart } from "../types/cart.types";
+
+const CART_STALE_TIME = 2 * 60 * 1000; 
 
 export const useCarts = () => {
   return useQuery({
     queryKey: ["carts"],
     queryFn: getCarts,
-    staleTime: Infinity,
+    staleTime: CART_STALE_TIME,
   });
 };
 
@@ -23,7 +25,7 @@ export const useCart = (id: number) => {
     queryKey: ["cart", id],
     queryFn: () => getCartById(id),
     enabled: !!id,
-    staleTime: Infinity,
+    staleTime: CART_STALE_TIME,
   });
 };
 
@@ -32,7 +34,7 @@ export const useCartsByUser = (userId: number) => {
     queryKey: ["carts", "user", userId],
     queryFn: () => getCartsByUser(userId),
     enabled: !!userId,
-    staleTime: Infinity,
+    staleTime: CART_STALE_TIME,
   });
 };
 
@@ -102,7 +104,7 @@ export const useDeleteCart = () => {
         return old.filter((c) => c.id !== id);
       });
 
-      // ✅ Plus d'erreur — deletedCart est typé DeletedCart qui étend CartItem
+      //  Plus d'erreur — deletedCart est typé DeletedCart qui étend CartItem
       queryClient.setQueryData(
         ["carts", "user", deletedCart.userId],
         (old: CartItem[] | undefined) => {
