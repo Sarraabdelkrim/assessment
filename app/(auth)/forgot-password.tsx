@@ -4,10 +4,10 @@ import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { z } from "zod";
-import { api } from "../../src/api/client";
 import { authSecurity } from "../../src/auth/auth.security";
 import { Input } from "../../src/components/ui/Input";
 import { Text } from "../../src/components/ui/Text";
+import { api } from "../../src/constant/api";
 import { useTranslation } from "../../src/i18n/useTranslation";
 import { useThemeStore } from "../../src/store/theme.store";
 import { darkColors, lightColors } from "../../src/theme/colors";
@@ -88,7 +88,7 @@ export default function ForgotPasswordScreen() {
 const styles = (colors: typeof lightColors) => StyleSheet.create({
 
   container: { flex: 1, padding: 24, justifyContent: "center", backgroundColor:colors.background },
-  title: { fontSize: 26, fontFamily: Fonts.brandExtraBold, marginBottom: 10, color: colors.text },
+  title: { fontSize: 26, fontFamily: Fonts.black, marginBottom: 10, color: colors.text },
   subtitle: { fontSize: 14, color: colors.textMuted, marginBottom: 20 },
   button: { marginTop: 20, backgroundColor: colors.yellow, height: 52, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   disabled: { opacity: 0.6 },

@@ -158,7 +158,7 @@ const styles = (colors: typeof lightColors) => StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  sub: { fontSize: 13, fontFamily: Fonts.brand, marginBottom: 2, color: colors.textMuted },
+  sub: { fontSize: 13, fontFamily: Fonts.brandBold, marginBottom: 2, color: colors.textMuted },
   title: { fontSize: 30, fontFamily: Fonts.brandExtraBold, letterSpacing: -0.5, color: colors.text },
   titleDot: { width: 8, height: 8, borderRadius: 4, marginBottom: 2, backgroundColor: colors.primary },
   avatar: {

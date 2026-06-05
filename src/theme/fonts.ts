@@ -20,4 +20,7 @@ export const Fonts = {
   bold: "Nunito_700Bold",
   extraBold: "Nunito_800ExtraBold",
   black: "Nunito_900Black",
+  brandBold: "Nunito_700Bold",
+  brandExtraBold: "Nunito_800ExtraBold",
+  brandSemiBold: "Nunito_600SemiBold",
 };

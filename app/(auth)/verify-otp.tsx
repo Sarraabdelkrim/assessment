@@ -3,8 +3,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { api } from "../../src/api/client";
 import { Text } from "../../src/components/ui/Text";
+import { api } from "../../src/constant/api";
 import { useTranslation } from "../../src/i18n/useTranslation";
 import { useThemeStore } from "../../src/store/theme.store";
 import { darkColors, lightColors } from "../../src/theme/colors";
@@ -154,7 +154,7 @@ export default function VerifyOtpScreen() {
 const styles = (colors: typeof lightColors) => StyleSheet.create({
 
   container: { flex: 1, padding: 24, justifyContent: "center", backgroundColor: "#fff" },
-  title: { fontSize: 26, fontFamily: Fonts.brandExtraBold, marginBottom: 10, color: "#111" },
+  title: { fontSize: 26, fontFamily: Fonts.black, marginBottom: 10, color: "#111" },
   subtitle: { fontSize: 14, color: colors.textMuted, marginBottom: 32 },
   otpRow: { flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 24 },
   otpInput: {

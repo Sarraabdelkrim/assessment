@@ -17,6 +17,35 @@
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ]
   },
+  "detox": {
+    "testRunner": {
+      "args": {
+        "$0": "jest",
+        "config": "e2e/jest.config.js"
+      }
+    },
+    "apps": {
+      "android.debug": {
+        "type": "android.apk",
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "build": "cd android && .\\gradlew.bat assembleDebug assembleAndroidTest"
+      }
+    },
+    "devices": {
+      "phone": {
+        "type": "android.attached",
+        "device": {
+          "adbName": "FYDY9DNNHQPFINGE"
+        }
+      }
+    },
+    "configurations": {
+      "android.emu.debug": {
+        "device": "phone",
+        "app": "android.debug"
+      }
+    }
+  },
   "dependencies": {
     "@expo-google-fonts/nunito": "^0.4.2",
     "@expo/vector-icons": "^15.0.3",
@@ -47,7 +76,7 @@
     "expo-system-ui": "~6.0.9",
     "expo-web-browser": "~15.0.10",
     "i18next": "^26.2.0",
-    "jail-monkey": "^3.0.0",
+    "jail-monkey": "^2.8.5",
     "jest-expo": "~54.0.17",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -69,6 +98,7 @@
     "@types/jest": "^30.0.0",
     "@types/react": "~19.1.0",
     "axios-mock-adapter": "^2.1.0",
+    "detox": "^20.51.3",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"

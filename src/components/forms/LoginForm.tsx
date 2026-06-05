@@ -59,9 +59,11 @@ export function LoginForm({ onSubmit, loading }: LoginFormProps) {
       <Controller
         control={control}
         name="username"
+        
         render={({ field: { onChange, value } }) => (
           <Input
             label={t("login.username")}
+             testID="usernameInput"
             value={value}
             error={errors.username?.message}
             onChangeText={onChange}
@@ -79,6 +81,7 @@ export function LoginForm({ onSubmit, loading }: LoginFormProps) {
     <Input
       label={t("login.password")}
       value={value}
+       testID="passwordInput"
       error={errors.password?.message}
       onChangeText={onChange}
       secureTextEntry={!showPassword}
@@ -87,6 +90,7 @@ export function LoginForm({ onSubmit, loading }: LoginFormProps) {
       rightElement={
         <TouchableOpacity
           onPress={() => setShowPassword((prev) => !prev)}
+            testID="togglePassword"
           style={S.eyeIcon}
         >
           <Image
@@ -109,6 +113,7 @@ export function LoginForm({ onSubmit, loading }: LoginFormProps) {
     
       <TouchableOpacity
         disabled={loading || isBlocked}
+         testID="loginButton"
         onPress={handleSubmit(onSubmit)}
         style={[S.button, (loading || isBlocked) && S.buttonDisabled]}
       >

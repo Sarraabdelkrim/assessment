@@ -4,9 +4,9 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { z } from "zod";
 
-import { api } from "../../src/api/client";
 import { Input } from "../../src/components/ui/Input";
 import { Text } from "../../src/components/ui/Text";
+import { api } from "../../src/constant/api";
 import { useTranslation } from "../../src/i18n/useTranslation";
 
 import { useThemeStore } from "@/src/store/theme.store";
